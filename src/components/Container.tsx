@@ -14,7 +14,7 @@ export default function () {
 
     let mousedownId = useRef<any>();
 
-    const { width, height, loop, currentIndex, isPaused, keyboardNavigation } = useContext<GlobalCtx>(GlobalContext);
+    const { width, height, loop, currentIndex, isPaused, keyboardNavigation, onAllStoriesEnd } = useContext<GlobalCtx>(GlobalContext);
     const { stories } = useContext<StoriesContextInterface>(StoriesContext);
 
     useEffect(() => {
@@ -79,10 +79,11 @@ export default function () {
     }
 
     const updateNextStoryId = () => {
-        setCurrentIdWrapper(prev => {
-            if (prev < stories.length - 1) return prev + 1
-            return prev
-        })
+        if (currentId < stories.length -1) {
+            setCurrentIdWrapper(prev => prev + 1)
+        } else {
+            onAllStoriesEnd && onAllStoriesEnd(currentId, stories);
+        }
     }
 
     const debouncePause = (e: React.MouseEvent | React.TouchEvent) => {
