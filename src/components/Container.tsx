@@ -14,7 +14,7 @@ export default function () {
 
     let mousedownId = useRef<any>();
 
-    const { width, height, loop, currentIndex, isPaused, keyboardNavigation, onAllStoriesEnd } = useContext<GlobalCtx>(GlobalContext);
+    const { width, height, loop, currentIndex, isPaused, keyboardNavigation, onAllStoriesEnd, onPreviousStory, onNextStory } = useContext<GlobalCtx>(GlobalContext);
     const { stories } = useContext<StoriesContextInterface>(StoriesContext);
 
     useEffect(() => {
@@ -63,7 +63,15 @@ export default function () {
     }
 
     const previous = () => {
-        setCurrentIdWrapper(prev => prev > 0 ? prev - 1 : prev)
+        const hasPrevious = currentId > 0;
+        const previousId = currentId - 1;
+
+        setCurrentIdWrapper(hasPrevious ? previousId : currentId)
+
+        if (onPreviousStory) {
+            const args = hasPrevious ? [previousId, stories[previousId]] : [null, null];
+            onPreviousStory(...args)
+        }
     }
 
     const next = () => {
@@ -75,14 +83,24 @@ export default function () {
     };
 
     const updateNextStoryIdForLoop = () => {
-        setCurrentIdWrapper(prev => (prev + 1) % stories.length)
+        const nextId = (currentId + 1) % stories.length;
+
+        setCurrentIdWrapper(nextId)
+
+        if (onNextStory) {
+            onNextStory(nextId, stories[nextId])
+        }
     }
 
     const updateNextStoryId = () => {
-        if (currentId < stories.length -1) {
-            setCurrentIdWrapper(prev => prev + 1)
-        } else {
-            onAllStoriesEnd && onAllStoriesEnd(currentId, stories);
+        const hasNext = currentId < stories.length -1
+        const nextId = currentId + 1;
+
+        setCurrentIdWrapper(hasNext ? nextId : currentId)
+
+        if (onNextStory) {
+            const args = hasNext ? [nextId, stories[nextId]] : [null, null];
+            onNextStory(...args)
         }
     }
 

@@ -20,6 +20,8 @@ const ReactInstaStories = function (props: ReactInstaStoriesProps) {
         defaultInterval: props.defaultInterval,
         isPaused: props.isPaused,
         currentIndex: props.currentIndex,
+        onNextStory: props.onNextStory,
+        onPreviousStory: props.onPreviousStory,
         onStoryStart: props.onStoryStart,
         onStoryEnd: props.onStoryEnd,
         onAllStoriesEnd: props.onAllStoriesEnd,

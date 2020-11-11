@@ -15,6 +15,8 @@ export interface ReactInstaStoriesProps {
         tester: Tester;
     }[];
     onAllStoriesEnd?: Function;
+    onNextStory?: Function;
+    onPreviousStory?: Function;
     onStoryStart?: Function;
     onStoryEnd?: Function;
     keyboardNavigation?: boolean;
@@ -34,6 +36,8 @@ export interface GlobalCtx {
         tester: Tester;
     }[];
     onAllStoriesEnd?: Function;
+    onPreviousStory?: Function;
+    onNextStory?: Function;
     onStoryStart?: Function;
     onStoryEnd?: Function;
     keyboardNavigation?: boolean;
