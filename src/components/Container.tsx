@@ -14,7 +14,7 @@ export default function () {
 
     let mousedownId = useRef<any>();
 
-    const { width, height, loop, currentIndex, isPaused, keyboardNavigation, onAllStoriesEnd, onPreviousStory, onNextStory } = useContext<GlobalCtx>(GlobalContext);
+    const { width, height, loop, currentIndex, isPaused, controlsNavigation, renderNavigationControl, keyboardNavigation, onAllStoriesEnd, onPreviousStory, onNextStory } = useContext<GlobalCtx>(GlobalContext);
     const { stories } = useContext<StoriesContextInterface>(StoriesContext);
 
     useEffect(() => {
@@ -147,6 +147,12 @@ export default function () {
                 <div style={{ width: '50%', zIndex: 999 }} onTouchStart={debouncePause} onTouchEnd={e => mouseUp(e, 'previous')} onMouseDown={debouncePause} onMouseUp={(e) => mouseUp(e, 'previous')} />
                 <div style={{ width: '50%', zIndex: 999 }} onTouchStart={debouncePause} onTouchEnd={e => mouseUp(e, 'next')} onMouseDown={debouncePause} onMouseUp={(e) => mouseUp(e, 'next')} />
             </div>
+            {(controlsNavigation && renderNavigationControl) && (
+                <div style={styles.overlay}>
+                    {renderNavigationControl({direction: 'previous', onClick: previous})}
+                    {renderNavigationControl({direction: 'next', onClick: next})}
+                </div>
+            )}
         </div>
     )
 }

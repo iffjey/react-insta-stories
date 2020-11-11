@@ -15,11 +15,13 @@ export interface ReactInstaStoriesProps {
         renderer: Renderer;
         tester: Tester
     }[];
+    renderNavigationControl?: Function;
     onAllStoriesEnd?: Function;
     onNextStory?: Function;
     onPreviousStory?: Function;
     onStoryStart?: Function;
     onStoryEnd?: Function;
+    controlsNavigation?: boolean;
     keyboardNavigation?: boolean;
 }
 
@@ -37,11 +39,13 @@ export interface GlobalCtx {
         renderer: Renderer;
         tester: Tester
     }[];
+    renderNavigationControl?: Function;
     onAllStoriesEnd?: Function;
     onPreviousStory?: Function;
     onNextStory?: Function;
     onStoryStart?: Function;
     onStoryEnd?: Function;
+    controlsNavigation?: boolean;
     keyboardNavigation?: boolean;
 }
 
