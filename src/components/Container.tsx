@@ -14,7 +14,7 @@ export default function () {
 
     let mousedownId = useRef<any>();
 
-    const { width, height, loop, currentIndex, isPaused, controlsNavigation, renderNavigationControl, keyboardNavigation, onAllStoriesEnd, onPreviousStory, onNextStory } = useContext<GlobalCtx>(GlobalContext);
+    const { width, height, loop, currentIndex, isPaused, controlsNavigation, renderNavigationControl, keyboardNavigation, onPreviousStory, onNextStory } = useContext<GlobalCtx>(GlobalContext);
     const { stories } = useContext<StoriesContextInterface>(StoriesContext);
 
     useEffect(() => {
@@ -59,7 +59,6 @@ export default function () {
 
     const setCurrentIdWrapper = (callback) => {
         setCurrentId(callback);
-        toggleState('pause', true);
     }
 
     const previous = () => {
