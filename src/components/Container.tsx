@@ -20,7 +20,7 @@ export default function () {
     useEffect(() => {
         if (typeof currentIndex === 'number') {
             if (currentIndex >= 0 && currentIndex < stories.length) {
-                setCurrentIdWrapper(() => currentIndex)
+                setCurrentId(currentIndex)
             } else {
                 console.error('Index out of bounds. Current index was set to value more than the length of stories array.', currentIndex)
             }
@@ -41,7 +41,7 @@ export default function () {
                 document.removeEventListener("keydown", handleKeyDown);
             }
         }
-    }, [keyboardNavigation])
+    }, [currentId, keyboardNavigation])
 
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'ArrowLeft') {
@@ -57,15 +57,11 @@ export default function () {
         setBufferAction(!!bufferAction)
     }
 
-    const setCurrentIdWrapper = (callback) => {
-        setCurrentId(callback);
-    }
-
     const previous = () => {
         const hasPrevious = currentId > 0;
         const previousId = currentId - 1;
 
-        setCurrentIdWrapper(hasPrevious ? previousId : currentId)
+        setCurrentId(hasPrevious ? previousId : currentId)
 
         if (onPreviousStory) {
             const args = hasPrevious ? [previousId, stories[previousId]] : [null, null];
@@ -84,7 +80,7 @@ export default function () {
     const updateNextStoryIdForLoop = () => {
         const nextId = (currentId + 1) % stories.length;
 
-        setCurrentIdWrapper(nextId)
+        setCurrentId(nextId)
 
         if (onNextStory) {
             onNextStory(nextId, stories[nextId])
@@ -95,7 +91,7 @@ export default function () {
         const hasNext = currentId < stories.length -1
         const nextId = currentId + 1;
 
-        setCurrentIdWrapper(hasNext ? nextId : currentId)
+        setCurrentId(hasNext ? nextId : currentId)
 
         if (onNextStory) {
             const args = hasNext ? [nextId, stories[nextId]] : [null, null];

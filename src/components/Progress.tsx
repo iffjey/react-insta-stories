@@ -1,49 +1,46 @@
 import React, { useContext } from 'react'
 import { ProgressProps, ProgressContext } from './../interfaces'
-import ProgressWrapper from './ProgressWrapper'
 import ProgressCtx from './../context/Progress'
 
 export default (props: ProgressProps) => {
+    const { active, count } = props;
     const { bufferAction, pause } = useContext<ProgressContext>(ProgressCtx)
 
-    const getProgressStyle = ({ active }) => {
+    const getWrapperStyle = () => ({
+        opacity: pause && !bufferAction ? 0 : 1
+    })
+
+    const getProgressStyle = () => {
         switch (active) {
             case 2:
-                return { width: '100%' }
+                return { transform: `translateX(0)` }
             case 1:
-                return { transform: `scaleX(${props.count / 100})` }
+                return { transform: `translateX(${-100 + count}%)`, borderRadius: '3px' }
             case 0:
-                return { width: 0 }
+                return { transform: `translateX(-101%)` }
             default:
-                return { width: 0 }
+                return { transform: `translateX(-101%)` }
         }
     }
 
-    const { width, active } = props
     return (
-        <ProgressWrapper width={width} pause={pause} bufferAction={bufferAction}>
-            <div
-                style={{ ...getProgressStyle({ active }), ...styles.inner }} />
-        </ProgressWrapper>
+        <div style={{ ...styles.wrapper, ...getWrapperStyle() }}>
+            <div style={{ ...styles.progress, ...getProgressStyle() }} />
+        </div>
     )
 }
 
 const styles: any = {
-    inner: {
+    wrapper: {
+        height: '2px',
+        borderRadius: '3px',
+        background: '#555',
+        overflow: 'hidden',
+        transition: 'opacity 400ms ease-in-out'
+    },
+    progress: {
         background: '#fff',
         height: '100%',
-        maxWidth: '100%',
-        borderRadius: 2,
-        transformOrigin: 'center left',
-
-        WebkitBackfaceVisibility: 'hidden',
-        MozBackfaceVisibility: 'hidden',
-        msBackfaceVisibility: 'hidden',
-        backfaceVisibility: 'hidden',
-
-        WebkitPerspective: 1000,
-        MozPerspective: 1000,
-        msPerspective: 1000,
-        perspective: 1000
+        willChange: 'transform'
     }
 }

@@ -122,15 +122,8 @@ export interface HeaderProps {
     subheading: string;
 }
 export interface ProgressProps {
-    width: number;
     active: number;
     count: number;
-}
-export interface ProgressWrapperProps {
-    children: any;
-    width: number;
-    pause: boolean;
-    bufferAction: boolean;
 }
 export interface ProgressArrayProps {
 }

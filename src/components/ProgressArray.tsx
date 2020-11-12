@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from 'react'
+import React, { useContext, useState, useEffect, useRef, useLayoutEffect } from 'react'
 import Progress from './Progress'
 import { ProgressContext, GlobalCtx, StoriesContext as StoriesContextInterface } from './../interfaces'
 import ProgressCtx from './../context/Progress'
@@ -11,11 +11,37 @@ export default () => {
     const { defaultInterval, onStoryEnd, onStoryStart, onAllStoriesEnd } = useContext<GlobalCtx>(GlobalContext);
     const { stories } = useContext<StoriesContextInterface>(StoriesContext);
 
-    useEffect(() => {
-        setCount(0)
-    }, [currentId, stories])
+    const animationFrameId = useRef<number>()
+    const countRef = useRef<number>()
 
     useEffect(() => {
+        function incrementCount() {
+            if (countRef.current === 0) storyStartCallback()
+
+            setCount((count: number) => {
+                const interval = getCurrentInterval()
+                const newCount = Math.min(count + (100 / ((interval / 1000) * 60)), 100);
+                countRef.current = newCount
+                return newCount
+            })
+
+            if (countRef.current < 100) {
+                animationFrameId.current = requestAnimationFrame(incrementCount)
+            } else {
+                cancelAnimationFrame(animationFrameId.current)
+
+                storyEndCallback()
+
+                if (currentId === stories.length - 1) {
+                    allStoriesEndCallback()
+                } else {
+                    setCount(0);
+                }
+
+                next()
+            }
+        }
+
         if (!pause) {
             animationFrameId.current = requestAnimationFrame(incrementCount)
         }
@@ -24,27 +50,10 @@ export default () => {
         }
     }, [currentId, pause])
 
-    let animationFrameId = useRef<number>()
+    useEffect(() => {
+        setCount(0)
+    }, [currentId, stories])
 
-    let countCopy = count;
-    const incrementCount = () => {
-        if (countCopy === 0) storyStartCallback()
-        setCount((count: number) => {
-            const interval = getCurrentInterval()
-            countCopy = count + (100 / ((interval / 1000) * 60))
-            return count + (100 / ((interval / 1000) * 60))
-        })
-        if (countCopy < 100) {
-            animationFrameId.current = requestAnimationFrame(incrementCount)
-        } else {
-            storyEndCallback()
-            if (currentId === stories.length - 1) {
-                allStoriesEndCallback()
-            }
-            cancelAnimationFrame(animationFrameId.current)
-            next()
-        }
-    }
 
     const storyStartCallback = () => {
         onStoryStart && onStoryStart(currentId, stories[currentId])
@@ -64,30 +73,36 @@ export default () => {
         return defaultInterval
     }
 
+    const getActiveStatus = (index: number): number => {
+        if (index === currentId) {
+            return count >= 100 ? 2 : 1 
+        };
+
+         return index < currentId ? 2 : 0;
+    }
+
     return (
         <div style={styles.progressArr}>
             {stories.map((_, i) =>
                 <Progress
                     key={i}
                     count={count}
-                    width={1 / stories.length}
-                    active={i === currentId ? 1 : (i < currentId ? 2 : 0)}
-                />)}
+                    active={getActiveStatus(i)}
+                />
+            )}
         </div>
     )
 }
 
 const styles = {
     progressArr: {
-        display: 'flex',
-        justifyContent: 'center',
-        maxWidth: '100%',
-        flexWrap: 'row',
+        boxSizing: 'border-box',
         position: 'absolute',
-        width: '98%',
-        padding: 5,
-        paddingTop: 7,
-        alignSelf: 'center',
+        display: 'grid',
+        gridAutoFlow: 'column',
+        gridGap: '3px',
+        width: '100%',
+        padding: '9px',
         zIndex: 99,
         filter: 'drop-shadow(0 1px 8px #222)'
     }

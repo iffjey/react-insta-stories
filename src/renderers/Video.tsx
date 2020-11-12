@@ -17,6 +17,10 @@ export const renderer: Renderer = ({ story, action, isPaused, config, messageHan
     let vid = React.useRef<HTMLVideoElement>(null);
 
     React.useEffect(() => {
+        action('pause', true)
+    }, [])
+
+    React.useEffect(() => {
         if (vid.current) {
             if (isPaused) {
                 vid.current.pause();
