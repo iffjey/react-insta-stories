@@ -156,7 +156,6 @@ const styles = {
     container: {
         display: 'flex',
         flexDirection: 'column',
-        background: '#111',
         position: 'relative'
     },
     overlay: {
