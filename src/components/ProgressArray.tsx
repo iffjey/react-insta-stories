@@ -14,9 +14,14 @@ export default () => {
     const animationFrameId = useRef<number>()
     const countRef = useRef<number>()
 
+    console.log('render::pause', { pause })
+
     useEffect(() => {
+        console.log('progress array::use effect')
         function incrementCount() {
+            console.log('progress array::increment count')
             if (countRef.current === 0) storyStartCallback()
+
 
             setCount((count: number) => {
                 const interval = getCurrentInterval()
@@ -26,8 +31,10 @@ export default () => {
             })
 
             if (countRef.current < 100) {
+                console.log('progress array::increment count::raw retry')
                 animationFrameId.current = requestAnimationFrame(incrementCount)
             } else {
+                console.log('progress array::increment count::cancel')
                 cancelAnimationFrame(animationFrameId.current)
 
                 storyEndCallback()
@@ -41,11 +48,12 @@ export default () => {
                 next()
             }
         }
-
         if (!pause) {
+            console.log('progress array::use effect::not pause start')
             animationFrameId.current = requestAnimationFrame(incrementCount)
         }
         return () => {
+            console.log('progress array::use effect::teardown cancel')
             cancelAnimationFrame(animationFrameId.current)
         }
     }, [currentId, pause])
