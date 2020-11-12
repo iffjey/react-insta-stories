@@ -16,7 +16,7 @@ export default () => {
 
     console.log('render::pause', { pause })
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         console.log('progress array::use effect')
         function incrementCount() {
             console.log('progress array::increment count')
